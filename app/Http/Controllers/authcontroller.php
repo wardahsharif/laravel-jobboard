@@ -48,9 +48,15 @@ $field = $request-> validate ([
     'password' => ['required']
 ]);
 
-dd($request);
+
   // Try to login the user 
 
-Auth::attempt($fields, $request -> remember);
+if(Auth::attempt($field, $request -> remember)) {
+    return redirect()->intended();
+} else {
+    return back()->withError([
+        'failed' => 'The provided credentials do not match our records.'
+    ]);
+}
    }
 }

@@ -14,12 +14,25 @@
     <header class="bg-slate-800 shadow-lg"> 
         <nav>
 
+           
     <a href='{{route('home')}}' class="nav-link text-4xl">Home</a>
-    <div class="flex items-center gap-4">
+
+    @auth
+ <div class="relative grid place-items-center">
+{{--Dropdown menu button--}}
+
+
+ </div>
+    @endauth
+
+
+    @guest
+      <div class="flex items-center gap-4">
       <a href='{{ route('login')}}' class="nav-link">Login</a>
       <a href='{{route('register')}}'class="nav-link">Register</a>
-
     </div>
+    @endguest
+
         </nav>
     </header>
 
