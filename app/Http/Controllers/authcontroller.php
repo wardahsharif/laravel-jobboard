@@ -59,4 +59,26 @@ if(Auth::attempt($field, $request -> remember)) {
     ]);
 }
    }
+
+ 
+   //logout user
+
+  public function logout(Request $request) {
+
+    //Logout the user
+  Auth::logout();
+
+   //Invalidate user's session
+ $request->session()->invalidate();
+   
+ //Regenerate CSRF token
+ $request->session()->invalidate();
+
+ //Redirect to home
+ return redirect('/');
+
+   }
+
+
 }
+
