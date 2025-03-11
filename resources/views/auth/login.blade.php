@@ -33,15 +33,12 @@
         <label for="remember">Remember me</label>
      </div>
 
-
      @error('failed')
      <p class="error">{{$message}}</p>
      @enderror
 
-
          {{-- submit button--}}
-         <button class="btn">Login</button>
-
+         <button class="btn  bg-blue-950 rounded px-4 py-2 text-white">Login</button>
         </form>
     </div>
 </x-layout>

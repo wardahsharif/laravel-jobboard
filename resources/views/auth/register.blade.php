@@ -51,7 +51,7 @@
          </div>
 
          {{-- submit button--}}
-         <button class="btn">Register</button>
+         <button class="btn bg-blue-950 rounded px-4 py-2 text-white">Register</button>
 
         </form>
     </div>
