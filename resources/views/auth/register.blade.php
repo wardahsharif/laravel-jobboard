@@ -1,58 +1,62 @@
-<x-layout>
-    <h1 class="title">Register a new account</h1>
+<!-- Bootstrap & Custom CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="{{ asset('css/style.css') }}">
 
-    <div class="mx-auto max-w-screen-sm card border shadow p-5">
-        <form action="{{route('register')}}" method="post">
-@csrf
+<div class="container d-flex justify-content-center align-items-center min-vh-100">
+    <div class="card shadow-lg p-4 rounded" style="width: 100%; max-width: 400px;">
 
+        <!-- Success Message -->
+        @if (session('success'))
+            <div class="alert alert-success text-center">
+                {{ session('success') }}
+            </div>
+        @endif
 
-            {{--username--}}
-    <div class="mb-4">
-    <label for="username">Username</label>
-    <input type="text"
-     name="username" 
-     value="{{old ('username')}}" 
-     class="input @error('username') ring-red-500 @enderror">
+        <h3 class="text-center mb-3">Register</h3>
 
-    @error('username')
-      <p class="error">{{$message}}</p>
-    @enderror
+        <form method="POST" action="{{ route('register') }}">
+            @csrf
 
-    </div>
-
-    {{--email--}}
-    <div class="mb-4">
-        <label for="email">Email</label>
-        <input type="text" name="email" value="{{old ('email')}}" class="input  @error('email') ring-red-500 @enderror">
-        @error('email')
-        <p class="error">{{$message}}</p>
-  
-      @enderror
-     </div>
-
-       {{--password--}}
-         <div class="mb-8">
-        <label for="password">Password</label>
-          <input type="password" name="password" class="input  @error('password') ring-red-500 @enderror">
-          @error('password')
-          <p class="error">{{$message}}</p>
-    
-        @enderror
+            <!-- Name -->
+            <div class="mb-3">
+                <label for="name" class="form-label">Full Name</label>
+                <input id="name" class="form-control" type="text" name="name" value="{{ old('name') }}" required autofocus>
+                <x-input-error :messages="$errors->get('name')" class="text-danger mt-1" />
             </div>
 
-            {{--confirm password--}}
-            <div class="mb-4">
-             <label for="password_confirmation">Confirm Password</label>
-           <input type="password" name="password_confirmation" class="input  @error('password') ring-red-500 @enderror">
-           @error('password')
-           <p class="error">{{$message}}</p>
-     
-         @enderror
-         </div>
+            <!-- Email -->
+            <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input id="email" class="form-control" type="email" name="email" value="{{ old('email') }}" required>
+                <x-input-error :messages="$errors->get('email')" class="text-danger mt-1" />
+            </div>
 
-         {{-- submit button--}}
-         <button class="btn bg-blue-950 rounded px-4 py-2 text-white">Register</button>
+            <!-- Password -->
+            <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <input id="password" class="form-control" type="password" name="password" required>
+                <x-input-error :messages="$errors->get('password')" class="text-danger mt-1" />
+            </div>
+
+            <!-- Confirm Password -->
+            <div class="mb-3">
+                <label for="password_confirmation" class="form-label">Confirm Password</label>
+                <input id="password_confirmation" class="form-control" type="password" name="password_confirmation" required>
+                <x-input-error :messages="$errors->get('password_confirmation')" class="text-danger mt-1" />
+            </div>
+
+            <!-- Register Button -->
+            <div class="d-grid">
+                <button type="submit" class="btn btn-success">Register</button>
+            </div>
+
+            <!-- Login Link -->
+            <div class="text-center mt-3">
+                <a class="text-decoration-none text-primary" href="{{ route('login') }}">
+                    Already have an account? Log in here
+                </a>
+            </div>
 
         </form>
     </div>
-</x-layout>
+</div>
