@@ -12,13 +12,22 @@ use Illuminate\View\View;
 class ProfileController extends Controller
 {
     /**
-     * Display the user's profile form.
+     * Display the user's profile (read-only).
      */
-    public function edit(Request $request): View
+    public function show(): View
     {
-        return view('profile.edit', [
-            'user' => $request->user(),
+        return view('profile.show', [
+            'user' => Auth::user(),
         ]);
+    }
+
+    /**
+     * Display the user's profile form (edit).
+     */
+    public function edit()
+    {
+        $user = auth()->user();
+        return view('profile.edit', compact('user')); 
     }
 
     /**
@@ -34,7 +43,7 @@ class ProfileController extends Controller
 
         $request->user()->save();
 
-        return Redirect::route('profile.edit')->with('status', 'profile-updated');
+        return Redirect::route('profile.show')->with('status', 'profile-updated');
     }
 
     /**

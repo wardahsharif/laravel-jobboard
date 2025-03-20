@@ -2,6 +2,12 @@
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="{{ asset('css/style.css') }}">
 
+
+@extends('layouts.main')
+
+@section('title', 'Register')
+
+@section('content')
 <div class="container d-flex justify-content-center align-items-center min-vh-100">
     <div class="card shadow-lg p-4 rounded" style="width: 100%; max-width: 400px;">
 
@@ -19,9 +25,9 @@
 
             <!-- Name -->
             <div class="mb-3">
-                <label for="name" class="form-label">Full Name</label>
-                <input id="name" class="form-control" type="text" name="name" value="{{ old('name') }}" required autofocus>
-                <x-input-error :messages="$errors->get('name')" class="text-danger mt-1" />
+                <label for="username" class="form-label">Username</label>
+                <input id="username" class="form-control" type="text" name="username" value="{{ old('username') }}" required autofocus>
+                <x-input-error :messages="$errors->get('username')" class="text-danger mt-1" />
             </div>
 
             <!-- Email -->
@@ -60,3 +66,4 @@
         </form>
     </div>
 </div>
+@endsection

@@ -2,6 +2,14 @@
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="{{ asset('css/style.css') }}">
 
+
+
+
+@extends('layouts.main')
+
+@section('title', 'login')
+
+@section('content')
 <div class="container d-flex justify-content-center align-items-center min-vh-100">
     <div class="card shadow-lg p-4 rounded" style="width: 100%; max-width: 400px;">
         
@@ -57,3 +65,4 @@
         </form>
     </div>
 </div>
+@endsection

@@ -15,7 +15,7 @@ Route::get('/', function () {
 
 Route::get('/dashboard', function () {
     return view('dashboard');
-})->middleware(['auth'])->name('dashboard'); // Removed 'verified' if email verification is not needed
+})->middleware(['auth'])->name('dashboard'); 
 
 // Registration
 Route::get('/register', [RegisteredUserController::class, 'create'])->name('register');
@@ -34,15 +34,16 @@ Route::post('/forgot-password', [PasswordResetLinkController::class, 'store'])->
 Route::get('/reset-password/{token}', [NewPasswordController::class, 'create'])->name('password.reset');
 Route::post('/reset-password', [NewPasswordController::class, 'store'])->name('password.update');
 
-// Confirm Password (if needed)
+// Confirm Password
 Route::get('/confirm-password', [ConfirmablePasswordController::class, 'show'])->name('password.confirm');
 Route::post('/confirm-password', [ConfirmablePasswordController::class, 'store']);
 
+
+
 // Profile Routes (Protected)
 Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show'); // View profile (read-only)
+    Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update'); // Update profile
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy'); // Delete account
 });
-
-
