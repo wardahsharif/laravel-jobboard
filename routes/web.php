@@ -6,6 +6,8 @@ use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\ConfirmablePasswordController;
+use App\Http\Controllers\jobController;
+use App\Http\Controllers\ApplicationController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
@@ -46,4 +48,24 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update'); // Update profile
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy'); // Delete account
+});
+
+
+//job routes 
+
+Route::middleware('auth')->group(function () {
+    Route::resource('jobs', jobController::class);
+    return view('jobs.index'); 
+    return view('jobs.create'); 
+    return view('jobs.edit', compact('job')); 
+    return view('jobs.show', compact('job'));  
+});
+
+
+//Application routes
+
+Route::middleware('auth')->group(function () {
+    Route::get('/application', [ApplicationController::class, 'index'])->name('application.index');
+    Route::get('/application/create/{jobId}', [ApplicationController::class, 'create'])->name('application.create');
+    Route::post('/application/{jobId}', [ApplicationController::class, 'store'])->name('application.store');
 });
