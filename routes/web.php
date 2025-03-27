@@ -53,12 +53,9 @@ Route::middleware('auth')->group(function () {
 
 //job routes 
 
-Route::middleware('auth')->group(function () {
+Route::middleware('auth', 'role:employer')->group(function () {
     Route::resource('jobs', jobController::class);
-    return view('jobs.index'); 
-    return view('jobs.create'); 
-    return view('jobs.edit', compact('job')); 
-    return view('jobs.show', compact('job'));  
+  
 });
 
 

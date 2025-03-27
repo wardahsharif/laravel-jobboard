@@ -28,13 +28,14 @@ class ApplicationController extends Controller
 
     public function store(Request $request, $jobId)
     {
-        dd($request->all());
-
-        
+    
         $request->validate([
             'cover_letter' => 'required|string',
             'resume' => 'nullable|mimes:pdf,doc,docx|max:2048',
+        ], [
+            'resume.mimes' => 'Only PDF, DOC, or DOCX files are allowed.',
         ]);
+        
 
         $resumePath = null;
         if ($request->hasFile('resume')) {
@@ -45,9 +46,9 @@ class ApplicationController extends Controller
             'job_id' => $jobId,
             'user_id' => Auth::id(),
             'cover_letter' => $request->cover_letter,
-            'resume' => $resumePath,
+            'resume' => $resumePath,  
         ]);
 
-        return redirect()->route('jobs.show', $jobId)->with('success', 'Application submitted successfully!');
-    }
+        return redirect()->route('application.index')->with('success', 'Application submitted successfully!');
+    } 
 }
