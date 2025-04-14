@@ -29,11 +29,32 @@ class User extends Authenticatable
         ];
     }
 
-    // ✅ Add this relationship
+    // if user is Admin
+    public function isAdmin()
+    {
+        return $this->role === 'admin';
+    }
+
+    // if user is Employer
+    public function isEmployer()
+    {
+        return $this->role === 'employer';
+    }
+
+    // if user is a normal User
+    public function isUser()
+    {
+        return $this->role === 'user';
+    }
+
+
+    // relationship
    
    public function applications(): HasMany
     {
         return $this->hasMany(Application::class);
     }
+
+
     
 }

@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('username');
             $table->string('email')->unique();
             $table->string('password');
-            $table->string('role')->default('applicant'); 
+            $table->enum('role', ['admin', 'employer', 'user'])->default('user');
             $table->rememberToken();
             $table->timestamps();
         });
@@ -45,6 +45,8 @@ return new class extends Migration
         Schema::dropIfExists('users');
         Schema::dropIfExists('password_reset_tokens');
         Schema::dropIfExists('sessions');
+    
+
     }
 };
 
