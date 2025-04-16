@@ -90,7 +90,20 @@ Route::middleware('auth', 'role:user')->group(function () {
     Route::get('/application', [ApplicationController::class, 'index'])->name('application.index');
     Route::get('/application/create/{jobId}', [ApplicationController::class, 'create'])->name('application.create');
     Route::post('/application/{jobId}', [ApplicationController::class, 'store'])->name('application.store');
+    Route::patch('/application/{application}', [ApplicationController::class, 'update'])->name('application.update');
+  
+
+
 });
+
+
+Route::middleware('auth', 'role:employer')->group(function () {
+Route::get('/application/pending', [ApplicationController::class, 'pendingApplications'])->name('application.pending');
+Route::post('/application/{application}/approve', [ApplicationController::class, 'approve'])->name('application.approve');
+Route::get('/application/approved', [ApplicationController::class, 'approvedApplications'])->name('application.approved');
+Route::get('{application}/files/{type}/{filename}', [ApplicationController::class, 'viewFile'])->name('application.files.download');
+});
+
 
 // Privileges
 

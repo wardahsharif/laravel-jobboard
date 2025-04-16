@@ -20,7 +20,7 @@
 
             <div class="mb-3">
                 <label for="cover_letter" class="form-label">Cover Letter</label>
-                <textarea class="form-control" id="cover_letter" name="cover_letter" required></textarea>
+                <input type="file" class="form-control" id="cover_letter" name="cover_letter">
             </div>
 
             <div class="mb-3">

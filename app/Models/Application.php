@@ -15,6 +15,7 @@ class Application extends Model
         'job_id',
         'cover_letter',
         'resume',
+        'status',
     ];
 
     public function user(): BelongsTo

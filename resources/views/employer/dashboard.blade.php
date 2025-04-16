@@ -30,20 +30,29 @@
                 </div>
             </div>
 
-            <!-- Pending Applications -->
-            <div class="col-md-4">
+              <!-- Pending Applications -->
+              <div class="col-md-4">
                 <div class="card shadow-sm p-3">
                     <h5 class="card-title">Pending Applications</h5>
-                    <p class="card-text">{{ $pendingApplications }} Applications</p>
-                    <a href="{{ route('application.index') }}" class="btn btn-info">View Applications</a>
+                    <p class="card-text">{{ $pendingApplications->count() }} Applications</p>
+                    <a href="{{ route('application.pending') }}" class="btn btn-info">View Pending Applications</a>
                 </div>
             </div>
         </div>
 
-        <div class="mt-4">
-            <!-- Post Job Button -->
-            <a href="{{ route('jobs.create') }}" class="btn btn-success">Post a Job</a>
+          <!-- approved Applications -->
+          <div class="col-md-4">
+                <div class="card shadow-sm p-3">
+                    <h5 class="card-title">Approved Applications</h5>
+                    <p class="card-text">{{ $approvedApplications->count() }} Applications</p>
+                    <a href="{{ route('application.approved') }}" class="btn btn-info">View Pending Applications</a>
+                </div>
+            </div>
         </div>
+
+
+
+     
     </div>
 </div>
 @endsection

@@ -40,9 +40,16 @@ class DashboardController extends Controller
         // Get the pending applications for the employer's jobs
         $pendingApplications = Application::whereHas('job', function($query) use ($user) {
             $query->where('user_id', $user->id);
-        })->where('status', 'pending')->count();
+        })->where('status', 'pending')->get();
 
-        return view('employer.dashboard', compact('activeJobs', 'closedJobs', 'pendingApplications','user'));
+        $approvedApplications = Application::with('job')
+        ->whereHas('job', function ($query) use ($user) {
+            $query->where('user_id', $user->id);
+        })
+        ->where('status', 'approved')
+        ->get();
+
+        return view('employer.dashboard', compact('activeJobs', 'closedJobs', 'pendingApplications','approvedApplications','user'));
     }
 
     public function userDashboard()

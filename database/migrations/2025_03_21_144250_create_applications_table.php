@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('job_id')->constrained()->cascadeOnDelete();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->text('cover_letter');
+            $table->string('cover_letter')->nullable();
             $table->string('resume')->nullable();
             $table->timestamps();
         });

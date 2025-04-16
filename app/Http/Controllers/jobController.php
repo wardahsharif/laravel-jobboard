@@ -63,6 +63,8 @@ class JobController extends Controller
      */
     public function show(Job $job)
     {
+        $job->load('applications.user');
+
         return view('jobs.show', compact('job'));
     }
 
