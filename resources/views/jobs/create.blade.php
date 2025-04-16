@@ -3,7 +3,10 @@
 @section('title', 'Post a Job')
 
 @section('content')
-    <div class="container">
+
+
+    <div class="container p-5 my-5 border rounded">
+    
         <h2>Post a Job</h2>
 
         <form action="{{ route('jobs.store') }}" method="POST">

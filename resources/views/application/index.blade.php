@@ -3,6 +3,13 @@
 @section('title', 'My Applications')
 
 @section('content')
+
+@if (auth()->user()->role !== 'user')
+    <div class="container mt-4">
+    <div class="alert alert-danger">Access denied. This section is only for users.</div>
+        </div>
+    @else
+
     <div class="container mt-4">
         <h1>My Job Applications</h1>
         
@@ -19,4 +26,5 @@
             @endforeach
         </ul>
     </div>
+    @endif
 @endsection

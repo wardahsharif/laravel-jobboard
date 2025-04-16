@@ -3,12 +3,12 @@
 @section('title', 'Edit Job')
 
 @section('content')
-    <div class="container">
+    <div class="container border rounded my-5 p-5">
         <h2>Edit Job</h2>
 
         <form action="{{ route('jobs.update', $job->id) }}" method="POST">
             @csrf
-            @method('PATCH')
+            @method('PUT')
 
             <div class="mb-3">
                 <label class="form-label">Job Title</label>

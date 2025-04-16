@@ -1,7 +1,7 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+<nav class="navbar navbar-expand-lg navbar-dark dashboard-nav">
     <div class="container">
         <!-- Brand Name -->
-        <a class="navbar-brand" href="{{ route('dashboard') }}">My App</a>
+        <a class="navbar-brand" href="{{ route('dashboard') }}">Dashboard</a>
 
         <!-- Navbar Toggle for Mobile -->
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -22,16 +22,20 @@
                 @if(Auth::check())
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown">
-                            <img src="https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->name) }}&background=0D8ABC&color=fff"
-                                 class="rounded-circle me-2"
-                                 width="32"
-                                 height="32"
-                                 alt="Profile">
+                        <div class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center fw-bold me-2"
+     style="width: 32px; height: 32px; font-size: 14px;">
+     {{ strtoupper(substr(auth()->user()->name ?? auth()->user()->username ?? 'U', 0, 1)) }}
+
+</div>
                             {{ auth()->user()->name }}
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
                             <li><a class="dropdown-item" href="{{ route('profile.show') }}">Profile</a></li>
+
+                            @if(auth()->user()->role === 'user')
                             <li><a class="dropdown-item" href="{{ route('application.index') }}">My Applications</a></li>
+                            @endif
+
                             <li><hr class="dropdown-divider"></li>
                             <li>
                                 <form action="{{ route('logout') }}" method="POST">

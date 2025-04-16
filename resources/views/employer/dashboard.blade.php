@@ -10,6 +10,40 @@
                 {{ __('Welcome Employer') }}
             </h2>
         </div>
+
+        <div class="row mt-4">
+            <!-- Active Jobs -->
+            <div class="col-md-4">
+                <div class="card shadow-sm p-3">
+                    <h5 class="card-title">Active Jobs</h5>
+                   <p class="card-text">{{ $activeJobs }} Jobs</p>
+                    <a href="{{ route('jobs.index') }}" class="btn btn-primary">View Active Jobs</a>
+                </div>
+            </div>
+
+            <!-- Closed Jobs -->
+            <div class="col-md-4">
+                <div class="card shadow-sm p-3">
+                    <h5 class="card-title">Closed Jobs</h5>
+                    <p class="card-text">{{ $closedJobs }} Jobs</p>
+                    <a href="{{ route('jobs.index') }}" class="btn btn-secondary">View Closed Jobs</a>
+                </div>
+            </div>
+
+            <!-- Pending Applications -->
+            <div class="col-md-4">
+                <div class="card shadow-sm p-3">
+                    <h5 class="card-title">Pending Applications</h5>
+                    <p class="card-text">{{ $pendingApplications }} Applications</p>
+                    <a href="{{ route('application.index') }}" class="btn btn-info">View Applications</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-4">
+            <!-- Post Job Button -->
+            <a href="{{ route('jobs.create') }}" class="btn btn-success">Post a Job</a>
+        </div>
     </div>
 </div>
 @endsection

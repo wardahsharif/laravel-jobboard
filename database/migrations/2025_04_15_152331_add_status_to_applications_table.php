@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            // Add the 'role' column to the users table
-            $table->string('role')->default('user'); // Default role is 'user'
+        Schema::table('applications', function (Blueprint $table) {
+            $table->string('status')->default('pending');
+
         });
     }
 
@@ -22,9 +22,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            // Drop the 'role' column if the migration is rolled back
-            $table->dropColumn('role');
+        Schema::table('applications', function (Blueprint $table) {
+            $table->dropColumn('status');
         });
     }
 };

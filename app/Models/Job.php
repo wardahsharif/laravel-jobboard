@@ -18,5 +18,6 @@ class Job extends Model
         'salary',
         'type',
         'user_id',
+        'status', 
     ];
 }

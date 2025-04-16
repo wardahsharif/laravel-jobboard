@@ -92,4 +92,53 @@ body {
     color: #495057;
 }
 
+.dashboard-nav {
+    background-color: #a991b9;
+
+}
+
+.btn-edit {
+  background-color: #9c689a;
+  color: white;
+}
+
+.btn-edit:hover {
+    background-color: #a499a4;
+    color: white;
+  }
+
+.btn-delete {
+    background-color: brown;
+    color: white;
+}
+
+.btn-delete:hover {
+    background-color: rgb(156, 115, 115);
+    color: white;
+}
+
+.btn-list {
+    background-color:rgb(105, 87, 107);
+    color: white;
+}
+
+.btn-list:hover {
+    background-color:rgb(119, 110, 120);
+    color: white;
+}
+
+.bg-profile {
+    background-color: #9c689a;
+}
+
+
+.text-job {
+    color: black;
+}
+
+.text-job:hover {
+    color: rgba(84, 79, 79, 0.826);
+}
+
+
 

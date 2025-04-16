@@ -14,7 +14,7 @@
    @auth
    <x-navbar /> <!-- Dashboard Navigation -->
 @else
-   <x-guest-navbar /> <!-- Show Guest Navigation as a Blade component -->
+   <x-guest-navbar /> <!--  Guest Navigation f -->
 @endauth
 
 
@@ -25,6 +25,7 @@
         </main>
     </div>
 
-    <script src="{{ asset('js/app.js') }}"></script>
+    <script src="{{ mix('js/app.js') }}"></script>
+
 </body>
 </html>

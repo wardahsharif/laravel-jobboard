@@ -6,11 +6,10 @@ use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\ConfirmablePasswordController;
-use App\Http\Controllers\jobController;
+use App\Http\Controllers\JobController;
 use App\Http\Controllers\ApplicationController;
 use App\Http\Controllers\AdminController;
-
-use App\Http\Controllers\EmployerController;
+use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
@@ -20,15 +19,11 @@ Route::get('/', function () {
     return Auth::check() ? redirect()->route('dashboard') : view('welcome');
 })->name('home');
 
-Route::get('/dashboard', function () {
-    if (Auth::user()->hasRole('admin')) {
-        return view('admin.dashboard'); // This is the admin dashboard view
-    } elseif (Auth::user()->hasRole('employer')) {
-        return view('employer.dashboard'); // This is the employer dashboard view
-    } elseif (Auth::user()->hasRole('user')) {
-        return view('user.dashboard'); // This is the user dashboard view
-    }
-})->middleware(['auth'])->name('dashboard'); 
+
+Route::get('/dashboard', [DashboardController::class, 'index'])
+    ->middleware(['auth'])
+    ->name('dashboard');
+
 
 // Registration
 Route::get('/register', [RegisteredUserController::class, 'create'])->name('register');
@@ -66,7 +61,9 @@ Route::middleware('auth')->group(function () {
 
 Route::middleware('auth')->group(function () {
     Route::get('jobs', [jobController::class, 'index'])->name('jobs.index'); // List all jobs
+    Route::get('jobs/create', [jobController::class, 'create'])->name('jobs.create');
     Route::get('jobs/{job}', [jobController::class, 'show'])->name('jobs.show'); // Show job details
+    
 });
 
 
@@ -74,18 +71,22 @@ Route::middleware('auth')->group(function () {
 
 // Only employers can create/edit/delete jobs
 Route::middleware(['auth', 'role:employer'])->group(function () {
-    Route::get('jobs/create', [jobController::class, 'create'])->name('jobs.create');
-    Route::post('jobs', [jobController::class, 'store'])->name('jobs.store');
-    Route::get('jobs/{job}/edit', [jobController::class, 'edit'])->name('jobs.edit');
+
+   Route::post('jobs', [jobController::class, 'store'])->name('jobs.store');
+   Route::get('jobs/{job}/edit', [jobController::class, 'edit'])->name('jobs.edit');
     Route::put('jobs/{job}', [jobController::class, 'update'])->name('jobs.update');
     Route::delete('jobs/{job}', [jobController::class, 'destroy'])->name('jobs.destroy');
+    Route::patch('/jobs/{job}/close', [JobController::class, 'close'])->name('jobs.close');
+    Route::patch('/jobs/{job}/reopen', [JobController::class, 'reopen'])->name('jobs.reopen');
+
+
 });
 
 
 
 //Application routes
 
-Route::middleware('auth')->group(function () {
+Route::middleware('auth', 'role:user')->group(function () {
     Route::get('/application', [ApplicationController::class, 'index'])->name('application.index');
     Route::get('/application/create/{jobId}', [ApplicationController::class, 'create'])->name('application.create');
     Route::post('/application/{jobId}', [ApplicationController::class, 'store'])->name('application.store');
@@ -93,16 +94,16 @@ Route::middleware('auth')->group(function () {
 
 // Privileges
 
-Route::middleware(['auth'])->group(function () {
-    Route::get('/admin/dashboard', function () {
-        return view('admin.dashboard');
-    })->middleware('role:admin');
+/*Route::middleware(['auth'])->group(function () {
+      Route::get('/admin/dashboard', function () {
+       return view('admin.dashboard');
+   })->middleware('role:admin');
 
-    Route::get('/employer/dashboard', function () {
+   Route::get('/employer/dashboard', function () {
         return view('employer.dashboard');
     })->middleware('role:employer');
 
-    Route::get('/user/dashboard', function () {
-        return view('user.dashboard');
-    })->middleware('role:user');
-});
+   Route::get('/user/dashboard', function () {
+      return view('user.dashboard');
+   })->middleware('role:user');
+});*/
