@@ -15,7 +15,6 @@ class RoleMiddleware
             abort(403, 'Unauthorized access: User is not authenticated');
         }
 
-        // Exploding the roles passed in the route definition to handle multiple roles
         $roles = explode('|', $role);
 
         if (!in_array(Auth::user()->role, $roles)) {

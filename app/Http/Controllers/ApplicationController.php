@@ -27,7 +27,7 @@ class ApplicationController extends Controller
 
     public function show(Application $application)
 {
-    // Ensure the application is loaded with its related job and user
+   
     $application->load('job', 'user');
 
     return view('admin.applications.show', compact('application'));
@@ -59,7 +59,7 @@ class ApplicationController extends Controller
         abort(403, 'Access denied');
     }
 
-    // Admin can view all pending applications across all jobs
+    // Admin can view all pending applications 
     $applications = Application::with('user', 'job')->where('status', 'pending')->get();
 
     return view('admin.applications.pending', compact('applications'));
@@ -98,19 +98,19 @@ public function updateApp(Request $request, $id)
 {
     // Validate the input data
     $request->validate([
-        'status' => 'required|in:pending,approved,rejected',  // Ensure status is one of the defined values
-        'notes' => 'nullable|string',  // Validate notes as optional text
+        'status' => 'required|in:pending,approved,rejected', 
+        'notes' => 'nullable|string',  
     ]);
 
     // Find the application by ID
     $application = Application::findOrFail($id);
 
-    // Update the application fields
-    $application->status = $request->status; // Update the status
-    $application->notes = $request->notes; // Update the notes if provided
-    $application->save(); // Save the changes to the database
+    
+    $application->status = $request->status; 
+    $application->notes = $request->notes; 
+    $application->save();
 
-    // Redirect to the approved applications page with a success message
+  
     return redirect()->route('admin.applications.approved')->with('success', 'Application updated successfully.');
 }
  
@@ -234,7 +234,7 @@ public function pendingApplications()
 
 public function approve(Application $application)
 {
-    // Ensure that only the employer who owns the job can approve
+    // only the employer who owns the job can approve
     if ($application->job->user_id !== auth()->id()) {
         abort(403);
     }
@@ -247,12 +247,12 @@ public function approve(Application $application)
 
 public function reject(Application $application)
 {
-    // Ensure that only the employer who owns the job can reject
+    // only the employer who owns the job can reject
     if ($application->job->user_id !== auth()->id()) {
         abort(403);
     }
 
-    // Change the application status to 'rejected'
+   
     $application->status = 'rejected';
     $application->save();
 

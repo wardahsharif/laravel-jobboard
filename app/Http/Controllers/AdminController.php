@@ -43,7 +43,7 @@ public function updateEmployer(Request $request, User $user)
     $request->validate([
         'name' => 'required|string|max:255',
         'email' => 'required|email|unique:users,email,' . $user->id,
-        // Add other fields as needed
+       
     ]);
 
     $user->update($request->all());
@@ -88,7 +88,7 @@ public function updateUser(Request $request, User $user)
     $request->validate([
         'name' => 'required|string|max:255',
         'email' => 'required|email|unique:users,email,' . $user->id,
-        // Add other fields if needed
+    
     ]);
 
     $user->update($request->all());

@@ -12,6 +12,6 @@ class VerifyEmailController extends Controller
     {
         $request->fulfill();
 
-        return redirect('/dashboard'); // Change this to your desired route after verification
+        return redirect('/dashboard'); 
     }
 }
