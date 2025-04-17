@@ -18,9 +18,12 @@ class JobController extends Controller
     $activeJobs = Job::where('user_id', $user->id)->where('status', 'active')->count();
     $closedJobs = Job::where('user_id', $user->id)->where('status', 'closed')->count();
 
-          // Get all jobs (for users to view)
+          // Get all jobs (for users)
         $jobs = Job::latest()->paginate();
         return view('jobs.index', compact('jobs', 'activeJobs', 'closedJobs'));
+
+        $featuredJobs = Job::where('status', 'active')->take(3)->get(); 
+        return view('welcome', compact('featuredJobs'));
     }
 
     /**

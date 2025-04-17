@@ -151,4 +151,15 @@ body {
 }
 
 
+.navbar.guest {
+    background-color: #92a9da;
+}
 
+
+.hero {
+    background-color: #bfa5d8;
+}
+
+.bg-lilac {
+    background-color: #e7daf3 ;
+}

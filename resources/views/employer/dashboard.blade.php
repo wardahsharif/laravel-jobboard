@@ -6,8 +6,8 @@
 <div class="py-4">
     <div class="container">
         <div class="card shadow-sm p-4 mb-4">
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                {{ __('Welcome Employer') }}
+            <h2 class="font-semibold text-xl text-center text-gray-800 leading-tight">
+                {{ __(' Employer Dashboard') }}
             </h2>
         </div>
 

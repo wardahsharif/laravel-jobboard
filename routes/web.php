@@ -10,13 +10,21 @@ use App\Http\Controllers\JobController;
 use App\Http\Controllers\ApplicationController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\DashboardController;
+use App\Models\Job;
+
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
 // Dashboard
 Route::get('/', function () {
-    return Auth::check() ? redirect()->route('dashboard') : view('welcome');
+    // Fetch the featured jobs
+    $featuredJobs = Job::where('status', 'active')->take(3)->get(); // Example query, adjust as necessary
+    
+    return Auth::check() 
+        ? redirect()->route('dashboard') 
+        : view('welcome', compact('featuredJobs')); // Pass the variable to the view
 })->name('home');
+
 
 Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth'])
