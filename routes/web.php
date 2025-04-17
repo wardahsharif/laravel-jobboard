@@ -106,24 +106,21 @@ Route::middleware('auth')->group(function () {
 });
 
 // Routes for Employers to Manage Applications (Pending, Approved, Rejected)
-Route::middleware(['auth', 'role:employer'])->group(function () {
+Route::middleware(['auth', 'role:employer|admin'])->group(function () {
     Route::get('/application/pending', [ApplicationController::class, 'pendingApplications'])->name('application.pending');
     Route::post('/application/{application}/approve', [ApplicationController::class, 'approve'])->name('application.approve');
     Route::get('/application/approved', [ApplicationController::class, 'approvedApplications'])->name('application.approved');
     Route::get('/application/rejected', [ApplicationController::class, 'rejectedApplications'])->name('application.rejected');
     Route::post('/application/{application}/reject', [ApplicationController::class, 'reject'])->name('application.reject');
+    Route::get('{application}/files/{type}/{filename}', [ApplicationController::class, 'viewFile'])->name('application.files.download');
     Route::get('{application}/files/{type}/{filename}', [ApplicationController::class, 'viewFile'])->name('application.files.download');
 });
 
 // Routes for Admins to Manage Applications (Pending, Approved, Rejected)
 Route::middleware(['auth', 'role:admin'])->group(function () {
 
-    Route::get('/application/pending', [ApplicationController::class, 'pendingApplications'])->name('application.pending');
-    Route::post('/application/{application}/approve', [ApplicationController::class, 'approve'])->name('application.approve');
-    Route::get('/application/approved', [ApplicationController::class, 'approvedApplications'])->name('application.approved');
-    Route::get('/application/rejected', [ApplicationController::class, 'rejectedApplications'])->name('application.rejected');
-    Route::post('/application/{application}/reject', [ApplicationController::class, 'reject'])->name('application.reject');
-    Route::get('{application}/files/{type}/{filename}', [ApplicationController::class, 'viewFile'])->name('application.files.download');
+
+
     Route::get('/admin/applications/all', [ApplicationController::class, 'allApplications'])->name('admin.applications.all');
     Route::get('/admin/applications/pending', [ApplicationController::class, 'allPendingApplications'])->name('admin.applications.pending');
     Route::get('/admin/applications/approved', [ApplicationController::class, 'approvedApplications'])->name('admin.applications.approved');
