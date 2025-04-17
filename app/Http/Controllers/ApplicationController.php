@@ -10,7 +10,32 @@ use Illuminate\Support\Facades\Auth;
 class ApplicationController extends Controller
 {
 
+    public function allApplications()
+    {
+        $user = Auth::user();
+    
+        // Check if the user is an admin
+        if ($user->role !== 'admin') {
+            abort(403, 'Access denied');
+        }
+    
+        // Admin can view all applications
+        $applications = Application::with('user','job')->get();
+    
+        return view('admin.applications.all', compact('applications'));
+    }
 
+    public function show(Application $application)
+{
+    // Ensure the application is loaded with its related job and user
+    $application->load('job', 'user');
+
+    return view('admin.applications.show', compact('application'));
+}
+
+
+
+    
     public function index()
     {
         $user = Auth::user();
@@ -25,14 +50,70 @@ class ApplicationController extends Controller
     }
 
 
+    public function allPendingApplications()
+{
+    $user = Auth::user();
+
+    // Check if the user is an admin
+    if ($user->role !== 'admin') {
+        abort(403, 'Access denied');
+    }
+
+    // Admin can view all pending applications across all jobs
+    $applications = Application::with('user', 'job')->where('status', 'pending')->get();
+
+    return view('admin.applications.pending', compact('applications'));
+}
+
+
+public function allApprovedApplications()
+{
+    $applications = Application::with(['user', 'job'])->where('status', 'approved')->get();
+    return view('admin.applications.approved', compact('applications'));
+}
+
 
     public function create($jobId)
     {
         $job = Job::findOrFail($jobId);
-        return view('application.create', compact('job')); // Fix view folder name
+        return view('application.create', compact('job')); 
     }
 
+    public function allRejectedApplications()
+    {
+        $applications = Application::with(['user', 'job'])->where('status', 'rejected')->get();
+        return view('admin.applications.rejected', compact('applications'));
+    }
 
+    public function edit($id)
+{
+    // Retrieve the application by ID
+    $application = Application::findOrFail($id);
+
+    // Return the edit view and pass the application data to it
+    return view('admin.applications.edit', compact('application'));
+}
+
+public function updateApp(Request $request, $id)
+{
+    // Validate the input data
+    $request->validate([
+        'status' => 'required|in:pending,approved,rejected',  // Ensure status is one of the defined values
+        'notes' => 'nullable|string',  // Validate notes as optional text
+    ]);
+
+    // Find the application by ID
+    $application = Application::findOrFail($id);
+
+    // Update the application fields
+    $application->status = $request->status; // Update the status
+    $application->notes = $request->notes; // Update the notes if provided
+    $application->save(); // Save the changes to the database
+
+    // Redirect to the approved applications page with a success message
+    return redirect()->route('admin.applications.approved')->with('success', 'Application updated successfully.');
+}
+ 
 
     public function store(Request $request, $jobId)
     {
@@ -60,14 +141,14 @@ class ApplicationController extends Controller
 
 
 
-    // Sanitize and store resume if it exists
+  
     if ($request->hasFile('resume')) {
         $resumeFile = $request->file('resume');
         $resumeFilename = Str::slug($resumeFile->getClientOriginalName(), '-') . '.' . $resumeFile->getClientOriginalExtension();
         $resumePath = $resumeFile->storeAs('resumes', $resumeFilename, 'public');
     }
 
-      // Sanitize and store cover letter if it exists
+
       if ($request->hasFile('cover_letter')) {
         $coverLetterFile = $request->file('cover_letter');
         $coverLetterFilename = Str::slug($coverLetterFile->getClientOriginalName(), '-') . '.' . $coverLetterFile->getClientOriginalExtension();
@@ -88,20 +169,20 @@ class ApplicationController extends Controller
 
     public function viewFile($application, $type, $filename)
 {
-    // Decode the filename (to handle special characters and spaces)
+    
     $filename = urldecode($filename);
 
-    // Ensure type is either 'resumes' or 'cover_letters'
+
     if (!in_array($type, ['resumes', 'cover_letters'])) {
         abort(404, 'Invalid file type');
     }
 
-    // Define the full file path (make sure the path is correct for your environment)
+
     $filePath = storage_path("app/public/{$type}/{$filename}");
 
     // Check if the file exists
     if (file_exists($filePath)) {
-        // Return the file to be viewed (not downloaded)
+       
         return response()->file($filePath);
     }
 
@@ -122,12 +203,17 @@ class ApplicationController extends Controller
         'status' => $request->status,
     ]);
 
-    return back()->with('success', 'Application status updated.');
+    if ($application->status == 'approved') {
+        return redirect()->route('admin.applications.approved')->with('success', 'Application approved successfully.');
+    } elseif ($application->status == 'rejected') {
+        return redirect()->route('admin.applications.rejected')->with('success', 'Application rejected successfully.');
+    } else {
+        return redirect()->route('admin.applications.pending')->with('success', 'Application status updated to pending.');
+    }
 }
 
 public function pendingApplications()
 {
-    // Get the logged-in employer
     $user = auth()->user();
 
     if (!$user) {
@@ -135,7 +221,7 @@ public function pendingApplications()
     }
 
     // Get the pending applications for the employer's jobs
-    $applications = Application::with(['user', 'job']) // Explicitly load 'user' and 'job' relations
+    $applications = Application::with(['user', 'job']) 
         ->whereHas('job', function ($query) use ($user) {
             $query->where('user_id', $user->id);
         })
@@ -159,6 +245,22 @@ public function approve(Application $application)
     return redirect()->back()->with('success', 'Application approved successfully.');
 }
 
+public function reject(Application $application)
+{
+    // Ensure that only the employer who owns the job can reject
+    if ($application->job->user_id !== auth()->id()) {
+        abort(403);
+    }
+
+    // Change the application status to 'rejected'
+    $application->status = 'rejected';
+    $application->save();
+
+ 
+    return redirect()->back()->with('success', 'Application rejected successfully.');
+}
+
+
 public function approvedApplications()
 {
     $user = auth()->user();
@@ -175,6 +277,28 @@ public function approvedApplications()
         ->get();
 
     return view('application.approved', compact('applications'));
+}
+
+
+
+public function rejectedApplications()
+{
+    
+    $user = auth()->user();
+
+    if (!$user) {
+        return redirect()->route('login')->with('error', 'Please log in first.');
+    }
+
+    // Get the rejected applications for the employer's jobs
+    $applications = Application::with(['user', 'job'])
+        ->whereHas('job', function ($query) use ($user) {
+            $query->where('user_id', $user->id);
+        })
+        ->where('status', 'rejected')
+        ->get();
+
+    return view('application.rejected', compact('applications'));
 }
 
 

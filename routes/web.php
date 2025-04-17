@@ -13,40 +13,31 @@ use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
-//dashboard
-
+// Dashboard
 Route::get('/', function () {
     return Auth::check() ? redirect()->route('dashboard') : view('welcome');
 })->name('home');
-
 
 Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth'])
     ->name('dashboard');
 
-
-// Registration
+// Authentication Routes (Registration, Login, Logout, Password Reset)
 Route::get('/register', [RegisteredUserController::class, 'create'])->name('register');
 Route::post('/register', [RegisteredUserController::class, 'store']);
-
-// Login
 Route::get('/login', [AuthenticatedSessionController::class, 'create'])->name('login');
 Route::post('/login', [AuthenticatedSessionController::class, 'store']);
-
-// Logout
 Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 
-// Forgot Password & Reset
+// Forgot Password & Reset Routes
 Route::get('/forgot-password', [PasswordResetLinkController::class, 'create'])->name('password.request');
 Route::post('/forgot-password', [PasswordResetLinkController::class, 'store'])->name('password.email');
 Route::get('/reset-password/{token}', [NewPasswordController::class, 'create'])->name('password.reset');
 Route::post('/reset-password', [NewPasswordController::class, 'store'])->name('password.update');
 
-// Confirm Password
+// Confirm Password Route
 Route::get('/confirm-password', [ConfirmablePasswordController::class, 'show'])->name('password.confirm');
 Route::post('/confirm-password', [ConfirmablePasswordController::class, 'store']);
-
-
 
 // Profile Routes (Protected)
 Route::middleware('auth')->group(function () {
@@ -56,67 +47,87 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy'); // Delete account
 });
 
-
-//user job routes 
-
-Route::middleware('auth')->group(function () {
-    Route::get('jobs', [jobController::class, 'index'])->name('jobs.index'); // List all jobs
-    Route::get('jobs/create', [jobController::class, 'create'])->name('jobs.create');
-    Route::get('jobs/{job}', [jobController::class, 'show'])->name('jobs.show'); // Show job details
-    
+// Admin Manage regular users 
+Route::middleware(['auth', 'role:admin'])->group(function () {
+    Route::get('/admin/users', [AdminController::class, 'userIndex'])->name('admin.users.index');
+    Route::get('/admin/users/{user}/edit', [AdminController::class, 'editUser'])->name('admin.users.edit');
+    Route::put('/admin/users/{user}', [AdminController::class, 'updateUser'])->name('admin.users.update');
+    Route::delete('/admin/users/{user}', [AdminController::class, 'destroyUser'])->name('admin.users.destroy');
+    Route::get('/admin/users/{id}', [AdminController::class, 'showUser'])->name('admin.users.show');
+    Route::post('/admin/users', [AdminController::class, 'storeUser'])->name('admin.users.store'); 
 });
 
+// Admin Manage Employer Users
+Route::middleware(['auth', 'role:admin'])->group(function () {
+    Route::get('/admin/employers', [AdminController::class, 'employerIndex'])->name('admin.employer.index');
+    Route::get('/admin/employers/{user}/edit', [AdminController::class, 'editEmployer'])->name('admin.employer.edit');
+    Route::put('/admin/employers/{user}', [AdminController::class, 'updateEmployer'])->name('admin.employer.update');
+    Route::delete('/admin/employers/{user}', [AdminController::class, 'destroyEmployer'])->name('admin.employer.destroy');
+Route::get('/admin/employers/{id}', [AdminController::class, 'showEmployer'])->name('admin.employer.show');
+Route::get('/admin/all-users', [AdminController::class, 'allUsers'])->name('admin.all-users');
 
-//employer job route
 
-// Only employers can create/edit/delete jobs
-Route::middleware(['auth', 'role:employer'])->group(function () {
 
-   Route::post('jobs', [jobController::class, 'store'])->name('jobs.store');
-   Route::get('jobs/{job}/edit', [jobController::class, 'edit'])->name('jobs.edit');
-    Route::put('jobs/{job}', [jobController::class, 'update'])->name('jobs.update');
-    Route::delete('jobs/{job}', [jobController::class, 'destroy'])->name('jobs.destroy');
+});
+
+// Job Routes for All Authenticated Users
+Route::middleware('auth')->group(function () {
+    Route::get('jobs', [JobController::class, 'index'])->name('jobs.index'); // List all jobs
+    Route::get('jobs/create', [JobController::class, 'create'])->name('jobs.create');
+    Route::get('jobs/{job}', [JobController::class, 'show'])->name('jobs.show'); // Show job details
+});
+
+// Access for Employer Routes (Create, Edit, Delete Jobs)
+Route::middleware(['auth', 'role:employer|admin'])->group(function () {
+    Route::post('jobs', [JobController::class, 'store'])->name('jobs.store');
+    Route::get('jobs/{job}/edit', [JobController::class, 'edit'])->name('jobs.edit');
+    Route::put('jobs/{job}', [JobController::class, 'update'])->name('jobs.update');
+    Route::delete('jobs/{job}', [JobController::class, 'destroy'])->name('jobs.destroy');
     Route::patch('/jobs/{job}/close', [JobController::class, 'close'])->name('jobs.close');
     Route::patch('/jobs/{job}/reopen', [JobController::class, 'reopen'])->name('jobs.reopen');
-
-
 });
 
 
 
-//Application routes
-
-Route::middleware('auth', 'role:user')->group(function () {
+// Application Routes (For Users and Employers/ Admin to view and manage applications)
+Route::middleware('auth')->group(function () {
     Route::get('/application', [ApplicationController::class, 'index'])->name('application.index');
     Route::get('/application/create/{jobId}', [ApplicationController::class, 'create'])->name('application.create');
     Route::post('/application/{jobId}', [ApplicationController::class, 'store'])->name('application.store');
     Route::patch('/application/{application}', [ApplicationController::class, 'update'])->name('application.update');
-  
+});
+
+// Routes for Employers to Manage Applications (Pending, Approved, Rejected)
+Route::middleware(['auth', 'role:employer'])->group(function () {
+    Route::get('/application/pending', [ApplicationController::class, 'pendingApplications'])->name('application.pending');
+    Route::post('/application/{application}/approve', [ApplicationController::class, 'approve'])->name('application.approve');
+    Route::get('/application/approved', [ApplicationController::class, 'approvedApplications'])->name('application.approved');
+    Route::get('/application/rejected', [ApplicationController::class, 'rejectedApplications'])->name('application.rejected');
+    Route::post('/application/{application}/reject', [ApplicationController::class, 'reject'])->name('application.reject');
+    Route::get('{application}/files/{type}/{filename}', [ApplicationController::class, 'viewFile'])->name('application.files.download');
+});
+
+// Routes for Admins to Manage Applications (Pending, Approved, Rejected)
+Route::middleware(['auth', 'role:admin'])->group(function () {
+
+    Route::get('/application/pending', [ApplicationController::class, 'pendingApplications'])->name('application.pending');
+    Route::post('/application/{application}/approve', [ApplicationController::class, 'approve'])->name('application.approve');
+    Route::get('/application/approved', [ApplicationController::class, 'approvedApplications'])->name('application.approved');
+    Route::get('/application/rejected', [ApplicationController::class, 'rejectedApplications'])->name('application.rejected');
+    Route::post('/application/{application}/reject', [ApplicationController::class, 'reject'])->name('application.reject');
+    Route::get('{application}/files/{type}/{filename}', [ApplicationController::class, 'viewFile'])->name('application.files.download');
+    Route::get('/admin/applications/all', [ApplicationController::class, 'allApplications'])->name('admin.applications.all');
+    Route::get('/admin/applications/pending', [ApplicationController::class, 'allPendingApplications'])->name('admin.applications.pending');
+    Route::get('/admin/applications/approved', [ApplicationController::class, 'approvedApplications'])->name('admin.applications.approved');
+    Route::get('/admin/applications/rejected', [ApplicationController::class, 'rejectedApplications'])->name('admin.applications.rejected');
+    Route::get('/admin/applications/{application}', [ApplicationController::class, 'show'])->name('admin.applications.show');
+    Route::get('/admin/applications/{application}/edit', [ApplicationController::class, 'edit'])->name('admin.applications.edit');
+    Route::get('/admin/applications/{application}/file/{type}/{filename}', [ApplicationController::class, 'viewFile'])->name('admin.applications.viewFile');
+    Route::get('/admin/applications/rejected', [ApplicationController::class, 'allRejectedApplications'])->name('admin.applications.rejected');
+    Route::get('/admin/applications/approved', [ApplicationController::class, 'allApprovedApplications'])->name('admin.applications.approved');
+    Route::put('/admin/application/{application}', [ApplicationController::class, 'update'])->name('admin.applications.update');
 
 
 });
 
 
-Route::middleware('auth', 'role:employer')->group(function () {
-Route::get('/application/pending', [ApplicationController::class, 'pendingApplications'])->name('application.pending');
-Route::post('/application/{application}/approve', [ApplicationController::class, 'approve'])->name('application.approve');
-Route::get('/application/approved', [ApplicationController::class, 'approvedApplications'])->name('application.approved');
-Route::get('{application}/files/{type}/{filename}', [ApplicationController::class, 'viewFile'])->name('application.files.download');
-});
-
-
-// Privileges
-
-/*Route::middleware(['auth'])->group(function () {
-      Route::get('/admin/dashboard', function () {
-       return view('admin.dashboard');
-   })->middleware('role:admin');
-
-   Route::get('/employer/dashboard', function () {
-        return view('employer.dashboard');
-    })->middleware('role:employer');
-
-   Route::get('/user/dashboard', function () {
-      return view('user.dashboard');
-   })->middleware('role:user');
-});*/

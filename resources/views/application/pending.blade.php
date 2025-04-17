@@ -41,15 +41,24 @@
                 @endif
             </td>
             <td>
-                @if($application->status === 'pending')
-                    <form action="{{ route('application.approve', $application->id) }}" method="POST">
-                        @csrf
-                        <button type="submit" class="btn btn-success btn-sm">Approve</button>
-                    </form>
-                @else
-                    <span class="badge badge-success">Approved</span>
-                @endif
-            </td>
+    @if($application->status === 'pending')
+        <div class="d-flex gap-2">
+            <form action="{{ route('application.approve', $application->id) }}" method="POST">
+                @csrf
+                <button type="submit" class="btn btn-success btn-sm">Approve</button>
+            </form>
+
+            <form action="{{ route('application.reject', $application->id) }}" method="POST">
+                @csrf
+                <button type="submit" class="btn btn-danger btn-sm">Reject</button>
+            </form>
+        </div>
+    @elseif($application->status === 'approved')
+        <span class="badge badge-success">Approved</span>
+    @elseif($application->status === 'rejected')
+        <span class="badge badge-danger">Rejected</span>
+    @endif
+</td>
         </tr>
         @endforeach
     </tbody>

@@ -6,7 +6,8 @@
     <div class="container pt-5">
         <h2 class="text-center">Job Listings</h2>
 
-        @if(auth()->user()->role === 'employer')
+        @if(in_array(auth()->user()->role, ['employer', 'admin']))
+
         <a href="{{ route('jobs.create') }}" class="btn btn-edit">Post a Job</a>
 
         <!-- Display active and closed job counts -->
@@ -24,19 +25,23 @@
                     <br>
                     <small>{{ $job->company }} - {{ $job->location }}</small>
         </div>
+
+        @if(auth()->user()->role === 'employer' || auth()->user()->role === 'admin')
         @if($job->status === 'active')
     <form action="{{ route('jobs.close', $job->id) }}" method="POST" style="display:inline;">
         @csrf
         @method('PATCH')
-        <button type="submit" class="btn btn-edit">Close Job</button>
+        <button type="submit" class="btn btn-danger">Close Job</button>
     </form>
 @endif
+
 @if($job->status === 'closed')
     <form action="{{ route('jobs.reopen', $job->id) }}" method="POST" style="display:inline;">
         @csrf
         @method('PATCH')
         <button type="submit" class="btn btn-success btn-sm">Reopen</button>
     </form>
+@endif
 @endif
 
 

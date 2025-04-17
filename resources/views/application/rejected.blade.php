@@ -1,12 +1,12 @@
 @extends('layouts.main')
 
-@section('title', 'Approved Applications')
+@section('title', 'Rejected Applications')
 
 @section('content')
 <div class="py-4">
     <div class="container">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            Approved Applications
+            Rejected Applications
         </h2>
 
         <div class="mt-4">
@@ -39,13 +39,13 @@
                                     No resume uploaded
                                 @endif
                             </td>
-                            <td class="text-success">
-                            {{ $application->status}}
-                                <span class="badge badge-success">Approved</span>
+                            <td class="text-danger">
+                            {{ $application->status }}
+                                <span class="badge badge-danger">Rejected</span>
                             </td>
                         </tr>
                     @empty
-                        <tr><td colspan="5">No approved applications found.</td></tr>
+                        <tr><td colspan="5">No rejected applications found.</td></tr>
                     @endforelse
                 </tbody>
             </table>

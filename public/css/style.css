@@ -38,7 +38,7 @@ body {
     border-radius: 6px;
     transition: all 0.3s ease-in-out;
     font-weight: 500;
-    padding: 10px;
+    padding: 6px;
 }
 
 .btn-primary:hover {
@@ -47,15 +47,17 @@ body {
 
 /* Success Button for Register */
 .btn-success {
-    background-color: #a991b9;
+    background-color: #78b8ad;
     border-radius: 6px;
     transition: all 0.3s ease-in-out;
     font-weight: 500;
-    padding: 10px;
+    padding: 6px;
+    padding-left: 15px;
+    padding-right: 15px;
 }
 
 .btn-success:hover {
-    background-color: #9c689a;
+    background-color: #9dbfbe;
 }
 
 /* Links */
@@ -78,7 +80,7 @@ body {
 
 /* Error Messages */
 .text-danger {
-    font-size: 13px;
+    font-size: 16px;
 }
 
 /* Remember Me Checkbox */
@@ -138,6 +140,14 @@ body {
 
 .text-job:hover {
     color: rgba(84, 79, 79, 0.826);
+}
+
+.btn-danger {
+   
+    border-radius: 6px;
+    transition: all 0.3s ease-in-out;
+    font-weight: 500;
+    padding: 6px;
 }
 
 

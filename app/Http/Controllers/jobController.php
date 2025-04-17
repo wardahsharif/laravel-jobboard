@@ -96,11 +96,15 @@ class JobController extends Controller
         return redirect()->route('jobs.index')->with('success', 'Job updated successfully!');
     }
 
+
+
+
     public function close(Job $job)
 {
-    // Make sure the logged-in user is the owner of the job
-    if (auth()->id() !== $job->user_id) {
-        abort(403, 'Unauthorized action.');
+    $user = auth()->user();
+
+    if (!$user || ($user->role !== 'admin' && $user->id !== $job->user_id)) {
+        abort(403, 'Unauthorized access: User does not have the required role');
     }
 
     $job->status = 'closed';
@@ -108,11 +112,14 @@ class JobController extends Controller
 
     return back()->with('success', 'Job has been closed.');
 }
+
+    
 public function reopen(Job $job)
 {
-    // Optional: Check if the authenticated user owns the job
-    if (auth()->id() !== $job->user_id) {
-        abort(403); // Forbidden
+    $user = auth()->user();
+
+    if (!$user || ($user->role !== 'admin' && $user->id !== $job->user_id)) {
+        abort(403, 'Unauthorized access: User does not have the required role');
     }
 
     $job->status = 'active';
@@ -120,8 +127,7 @@ public function reopen(Job $job)
 
     return back()->with('success', 'Job reactivated successfully.');
 }
-
-
+    
 
     /**
      * Remove the specified job from the database.

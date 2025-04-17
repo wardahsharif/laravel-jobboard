@@ -9,48 +9,63 @@ use App\Models\User;
 class DashboardController extends Controller
 {
 
+
+
     public function index()
     {
         $user = auth()->user();
 
         if ($user->isAdmin()) {
-            return $this->adminDashboard(); // Calls the admin dashboard
+            return $this->adminDashboard(); 
         } elseif ($user->isEmployer()) {
-            return $this->employerDashboard(); // Calls the employer dashboard
+            return $this->employerDashboard(); 
         } elseif ($user->isUser()) {
-            return $this->userDashboard(); // Calls the user dashboard
+            return $this->userDashboard(); 
         }
 
-        abort(403); // If no role matched, show a forbidden page
+        abort(403); 
     }
+
+
 
     public function employerDashboard()
     {
-        // Get the logged-in employer
+        // Get the logged in employer
         $user = auth()->user();
 
 
         if (!$user) {
             abort(403, 'Unauthorized: No user is logged in.');
         } 
-        // Get the active and closed jobs for the employer
+
+        // active and closed jobs for the employer
         $activeJobs = Job::where('user_id', $user->id)->where('status', 'active')->count();
         $closedJobs = Job::where('user_id', $user->id)->where('status', 'closed')->count();
 
-        // Get the pending applications for the employer's jobs
+
+        // pending applications 
         $pendingApplications = Application::whereHas('job', function($query) use ($user) {
             $query->where('user_id', $user->id);
         })->where('status', 'pending')->get();
 
+        //approved applications
         $approvedApplications = Application::with('job')
         ->whereHas('job', function ($query) use ($user) {
             $query->where('user_id', $user->id);
-        })
-        ->where('status', 'approved')
-        ->get();
+        })->where('status', 'approved')->get();
 
-        return view('employer.dashboard', compact('activeJobs', 'closedJobs', 'pendingApplications','approvedApplications','user'));
+
+        // rejected applications
+        $rejectedApplications = Application::with('job')
+        ->whereHas('job', function ($query) use ($user) {
+            $query->where('user_id', $user->id);
+        }) ->where('status', 'rejected')->get();
+
+
+        return view('employer.dashboard', compact('activeJobs', 'closedJobs', 'pendingApplications','approvedApplications','rejectedApplications','user'));
     }
+
+
 
     public function userDashboard()
     {
@@ -63,13 +78,32 @@ class DashboardController extends Controller
         return view('user.dashboard', compact('applications'));
     }
 
-    public function adminDashboard()
-    {
-        // Get the admin overview
-        $totalUsers = User::count();
-        $totalJobs = Job::count();
-        $totalApplications = Application::count();
 
-        return view('admin.dashboard', compact('totalUsers', 'totalJobs', 'totalApplications'));
-    }
+
+    public function adminDashboard()
+{
+    $totalUsers = User::count();
+    $totalJobs = Job::count();
+    $totalApplications = Application::count();
+    $totalEmployers = User::where('role', 'employer')->count();
+    $totalRegularUsers = User::where('role', 'user')->count();
+    $pendingApplications = Application::where('status', 'pending')->count();
+    $approvedApplications = Application::where('status', 'approved')->count();
+    $rejectedApplications = Application::where('status', 'rejected')->count();
+
+    return view('admin.dashboard', compact(
+        'totalUsers',
+        'totalJobs',
+        'totalEmployers',
+        'totalRegularUsers',
+        'totalApplications',
+        'pendingApplications',
+        'approvedApplications',
+        'rejectedApplications'
+
+    ));
+}
+
+
+
 }
