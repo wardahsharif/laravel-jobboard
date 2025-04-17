@@ -301,6 +301,36 @@ public function rejectedApplications()
     return view('application.rejected', compact('applications'));
 }
 
+public function userPendingApplications()
+{
+    $applications = Application::where('user_id', auth()->id())
+        ->where('status', 'pending')
+        ->latest()
+        ->get();
+
+    return view('user.applications.pending', compact('applications'));
+}
+
+public function userApprovedApplications()
+{
+    $applications = Application::where('user_id', auth()->id())
+        ->where('status', 'approved')
+        ->latest()
+        ->get();
+
+    return view('user.applications.approved', compact('applications'));
+}
+
+public function userRejectedApplications()
+{
+    $applications = Application::where('user_id', auth()->id())
+        ->where('status', 'rejected')
+        ->latest()
+        ->get();
+
+    return view('user.applications.rejected', compact('applications'));
+}
+
 
 
 }

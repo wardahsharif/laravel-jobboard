@@ -10,8 +10,8 @@
         </div>
     @else
 
-    <div class="container mt-4">
-        <h1>My Job Applications</h1>
+    <div class="container mt-4 p-4">
+        <h1 class="text-center mb-4">My Job Applications</h1>
         
         @if(session('success'))
             <div class="alert alert-success">{{ session('success') }}</div>

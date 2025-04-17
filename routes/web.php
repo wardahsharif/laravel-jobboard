@@ -131,3 +131,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 });
 
 
+// User specific application views
+Route::get('/user/applications/pending', [ApplicationController::class, 'userPendingApplications'])->name('user.applications.pending');
+Route::get('/user/applications/approved', [ApplicationController::class, 'userApprovedApplications'])->name('user.applications.approved');
+Route::get('/user/applications/rejected', [ApplicationController::class, 'userRejectedApplications'])->name('user.applications.rejected');

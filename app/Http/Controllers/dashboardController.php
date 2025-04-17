@@ -68,17 +68,25 @@ class DashboardController extends Controller
 
 
     public function userDashboard()
-    {
-        // Get the logged-in user
-        $user = auth()->user();
+{
+    // Get the logged-in user
+    $user = auth()->user();
 
-        // Get the applications for the user
-        $applications = Application::where('user_id', $user->id)->get();
+    // Count total applications, approved, pending, and rejected
+    $totalApplications = Application::where('user_id', $user->id)->count();
+    
+    $pendingApplications = Application::where('user_id', $user->id)->where('status', 'pending')->count();
+    $approvedApplications = Application::where('user_id', $user->id)->where('status', 'approved')->count();
+    $rejectedApplications = Application::where('user_id', $user->id)->where('status', 'rejected')->count();
 
-        return view('user.dashboard', compact('applications'));
-    }
-
-
+    return view('user.dashboard', compact(
+        'totalApplications',
+        'pendingApplications',
+        'approvedApplications',
+        'rejectedApplications',
+        'user'
+    ));
+}
 
     public function adminDashboard()
 {
