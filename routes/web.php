@@ -14,7 +14,14 @@ use App\Models\Job;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\PaymentController;
+use Illuminate\Support\Facades\Artisan;
 
+
+
+Route::get('/run-migrations', function () {
+    Artisan::call('migrate', ['--force' => true]);
+    return 'Migrations run!';
+});
 
 
 // Dashboard
