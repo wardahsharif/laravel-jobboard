@@ -24,6 +24,7 @@ class DashboardController extends Controller
         }
 
         abort(403); 
+        
     }
 
 
