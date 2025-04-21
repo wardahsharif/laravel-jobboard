@@ -11,18 +11,21 @@ use App\Http\Controllers\ApplicationController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\DashboardController;
 use App\Models\Job;
-
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\PaymentController;
+
+
 
 // Dashboard
 Route::get('/', function () {
+
     // Fetch the featured jobs
-    $featuredJobs = Job::where('status', 'active')->take(3)->get(); // Example query, adjust as necessary
+    $featuredJobs = Job::where('status', 'active')->take(3)->get();
     
     return Auth::check() 
         ? redirect()->route('dashboard') 
-        : view('welcome', compact('featuredJobs')); // Pass the variable to the view
+        : view('welcome', compact('featuredJobs')); 
 })->name('home');
 
 
@@ -30,24 +33,26 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth'])
     ->name('dashboard');
 
-// Authentication Routes (Registration, Login, Logout, Password Reset)
+
+
+// Authentication 
 Route::get('/register', [RegisteredUserController::class, 'create'])->name('register');
 Route::post('/register', [RegisteredUserController::class, 'store']);
 Route::get('/login', [AuthenticatedSessionController::class, 'create'])->name('login');
 Route::post('/login', [AuthenticatedSessionController::class, 'store']);
 Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 
-// Forgot Password & Reset Routes
+// Forgot Password & Reset 
 Route::get('/forgot-password', [PasswordResetLinkController::class, 'create'])->name('password.request');
 Route::post('/forgot-password', [PasswordResetLinkController::class, 'store'])->name('password.email');
 Route::get('/reset-password/{token}', [NewPasswordController::class, 'create'])->name('password.reset');
 Route::post('/reset-password', [NewPasswordController::class, 'store'])->name('password.update');
 
-// Confirm Password Route
+// Confirm Password 
 Route::get('/confirm-password', [ConfirmablePasswordController::class, 'show'])->name('password.confirm');
 Route::post('/confirm-password', [ConfirmablePasswordController::class, 'store']);
 
-// Profile Routes (Protected)
+// Profile Routes
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show'); // View profile (read-only)
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -78,14 +83,16 @@ Route::get('/admin/all-users', [AdminController::class, 'allUsers'])->name('admi
 
 });
 
-// Job Routes for All Authenticated Users
+// Job Routes for All  Users
 Route::middleware('auth')->group(function () {
     Route::get('jobs', [JobController::class, 'index'])->name('jobs.index'); // List all jobs
     Route::get('jobs/create', [JobController::class, 'create'])->name('jobs.create');
     Route::get('jobs/{job}', [JobController::class, 'show'])->name('jobs.show'); // Show job details
 });
 
-// Access for Employer Routes (Create, Edit, Delete Jobs)
+
+
+//Job access for Employer Routes 
 Route::middleware(['auth', 'role:employer|admin'])->group(function () {
     Route::post('jobs', [JobController::class, 'store'])->name('jobs.store');
     Route::get('jobs/{job}/edit', [JobController::class, 'edit'])->name('jobs.edit');
@@ -97,7 +104,7 @@ Route::middleware(['auth', 'role:employer|admin'])->group(function () {
 
 
 
-// Application Routes (For Users and Employers/ Admin to view and manage applications)
+// Application Routes for all users
 Route::middleware('auth')->group(function () {
     Route::get('/application', [ApplicationController::class, 'index'])->name('application.index');
     Route::get('/application/create/{jobId}', [ApplicationController::class, 'create'])->name('application.create');
@@ -105,7 +112,9 @@ Route::middleware('auth')->group(function () {
     Route::patch('/application/{application}', [ApplicationController::class, 'update'])->name('application.update');
 });
 
-// Routes for Employers to Manage Applications (Pending, Approved, Rejected)
+
+
+// Application route for admin and employer
 Route::middleware(['auth', 'role:employer|admin'])->group(function () {
     Route::get('/application/pending', [ApplicationController::class, 'pendingApplications'])->name('application.pending');
     Route::post('/application/{application}/approve', [ApplicationController::class, 'approve'])->name('application.approve');
@@ -116,11 +125,10 @@ Route::middleware(['auth', 'role:employer|admin'])->group(function () {
     Route::get('{application}/files/{type}/{filename}', [ApplicationController::class, 'viewFile'])->name('application.files.download');
 });
 
-// Routes for Admins to Manage Applications (Pending, Approved, Rejected)
+
+
+// Application routes for admin
 Route::middleware(['auth', 'role:admin'])->group(function () {
-
-
-
     Route::get('/admin/applications/all', [ApplicationController::class, 'allApplications'])->name('admin.applications.all');
     Route::get('/admin/applications/pending', [ApplicationController::class, 'allPendingApplications'])->name('admin.applications.pending');
     Route::get('/admin/applications/approved', [ApplicationController::class, 'approvedApplications'])->name('admin.applications.approved');
@@ -136,7 +144,14 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 });
 
 
-// User specific application views
+// User specific application route
 Route::get('/user/applications/pending', [ApplicationController::class, 'userPendingApplications'])->name('user.applications.pending');
 Route::get('/user/applications/approved', [ApplicationController::class, 'userApprovedApplications'])->name('user.applications.approved');
 Route::get('/user/applications/rejected', [ApplicationController::class, 'userRejectedApplications'])->name('user.applications.rejected');
+
+
+//payment route
+
+Route::post('/payments/process', [PaymentController::class, 'process'])->name('payments.process');
+Route::get('/payments/callback', [PaymentController::class, 'callback'])->name('payments.callback');
+

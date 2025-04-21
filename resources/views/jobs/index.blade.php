@@ -10,7 +10,7 @@
 
         <a href="{{ route('jobs.create') }}" class="btn btn-edit">Post a Job</a>
 
-        <!-- Display active and closed job counts -->
+       
         <div class="mt-4">
             <p>Active Jobs: {{ $activeJobs }}</p>
             <p>Closed Jobs: {{ $closedJobs }}</p>

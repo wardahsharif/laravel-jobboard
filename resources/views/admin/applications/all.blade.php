@@ -17,7 +17,7 @@
                 <strong>{{ $application->job->title }}</strong> at {{ $application->job->company }}
                 <span class="text-muted">Applied on {{ $application->created_at->format('d M Y') }}</span>
 
-                <!-- Show status for admin -->
+                
                 <p><strong>Status:</strong> {{ ucfirst($application->status) }}</p>
 
                 <p><strong>Applicant:</strong> {{ $application->user->username }}</p>

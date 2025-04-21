@@ -9,8 +9,10 @@
     
         <h2>Post a Job</h2>
 
-        <form action="{{ route('jobs.store') }}" method="POST">
+        <form action="{{ route('payments.process') }}" method="POST">
             @csrf
+            <input type="hidden" name="amount" value="50000">
+            
             <div class="mb-3">
                 <label class="form-label">Job Title</label>
                 <input type="text" name="title" class="form-control" required>
