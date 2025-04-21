@@ -23,6 +23,10 @@ COPY . .
 
 RUN composer install --no-dev --optimize-autoloader
 
+RUN chmod -R 775 /var/www/storage /var/www/bootstrap/cache
+
+
+
 RUN chown -R www-data:www-data /var/www \
     && chmod -R 755 /var/www/storage
 
@@ -31,3 +35,4 @@ RUN chown -R www-data:www-data /var/www \
 EXPOSE 8000
 
 CMD php artisan serve --host=0.0.0.0 --port=8000
+

@@ -18,9 +18,25 @@ use Illuminate\Support\Facades\Artisan;
 
 
 
+
+Route::get('/test-db', function () {
+    try {
+        DB::connection()->getPdo();
+        return 'Connected to the database successfully!';
+    } catch (\Exception $e) {
+        return 'Could not connect to the database. Please check your configuration. Error: ' . $e->getMessage();
+    }
+});
+
+
+
 Route::get('/run-migrations', function () {
     Artisan::call('migrate', ['--force' => true]);
     return 'Migrations run!';
+});
+
+Route::get('/logs', function () {
+    return response()->file(storage_path('logs/laravel.log'));
 });
 
 
