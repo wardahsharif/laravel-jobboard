@@ -155,3 +155,4 @@ Route::get('/user/applications/rejected', [ApplicationController::class, 'userRe
 Route::post('/payments/process', [PaymentController::class, 'process'])->name('payments.process');
 Route::get('/payments/callback', [PaymentController::class, 'callback'])->name('payments.callback');
 
+
