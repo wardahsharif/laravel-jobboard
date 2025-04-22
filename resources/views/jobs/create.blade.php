@@ -9,10 +9,20 @@
     
         <h2>Post a Job</h2>
 
-        <form action="{{ route('payments.process') }}" method="POST">
+
+        @if(session('success'))
+    <div class="alert alert-success">{{ session('success') }}</div>
+@endif
+
+@if(session('error'))
+    <div class="alert alert-danger">{{ session('error') }}</div>
+@endif
+
+
+        <form action="{{ route('job.preview') }}" method="POST">
             @csrf
             <input type="hidden" name="amount" value="50000">
-            
+
             <div class="mb-3">
                 <label class="form-label">Job Title</label>
                 <input type="text" name="title" class="form-control" required>

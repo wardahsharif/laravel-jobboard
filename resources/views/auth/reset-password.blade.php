@@ -7,7 +7,7 @@
     <form method="POST" action="{{ route('password.update') }}">
         @csrf
 
-        
+        <!-- Hidden token -->
         <input type="hidden" name="token" value="{{ $request->route('token') }}">
 
         <!-- Email -->

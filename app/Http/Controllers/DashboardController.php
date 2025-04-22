@@ -5,6 +5,7 @@ use Illuminate\Http\Request;
 use App\Models\Job;
 use App\Models\Application;
 use App\Models\User;
+use App\Models\Transaction;
 
 class DashboardController extends Controller
 {
@@ -99,6 +100,8 @@ class DashboardController extends Controller
     $pendingApplications = Application::where('status', 'pending')->count();
     $approvedApplications = Application::where('status', 'approved')->count();
     $rejectedApplications = Application::where('status', 'rejected')->count();
+    $totalTransactions = Transaction::count();
+
 
     return view('admin.dashboard', compact(
         'totalUsers',
@@ -108,8 +111,8 @@ class DashboardController extends Controller
         'totalApplications',
         'pendingApplications',
         'approvedApplications',
-        'rejectedApplications'
-
+        'rejectedApplications',
+         'totalTransactions'
     ));
 }
 

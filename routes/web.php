@@ -14,30 +14,8 @@ use App\Models\Job;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\PaymentController;
-use Illuminate\Support\Facades\Artisan;
 
 
-
-
-Route::get('/test-db', function () {
-    try {
-        DB::connection()->getPdo();
-        return 'Connected to the database successfully!';
-    } catch (\Exception $e) {
-        return 'Could not connect to the database. Please check your configuration. Error: ' . $e->getMessage();
-    }
-});
-
-
-
-Route::get('/run-migrations', function () {
-    Artisan::call('migrate', ['--force' => true]);
-    return 'Migrations run!';
-});
-
-Route::get('/logs', function () {
-    return response()->file(storage_path('logs/laravel.log'));
-});
 
 
 // Dashboard
@@ -77,10 +55,10 @@ Route::post('/confirm-password', [ConfirmablePasswordController::class, 'store']
 
 // Profile Routes
 Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show'); // View profile (read-only)
+    Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show'); 
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update'); // Update profile
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy'); // Delete account
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update'); 
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy'); 
 });
 
 // Admin Manage regular users 
@@ -162,6 +140,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/applications/rejected', [ApplicationController::class, 'allRejectedApplications'])->name('admin.applications.rejected');
     Route::get('/admin/applications/approved', [ApplicationController::class, 'allApprovedApplications'])->name('admin.applications.approved');
     Route::put('/admin/application/{application}', [ApplicationController::class, 'update'])->name('admin.applications.update');
+    Route::get('/admin/transaction', [PaymentController::class, 'allTransactions'])->name('transactions.all');
 
 
 });
@@ -175,7 +154,13 @@ Route::get('/user/applications/rejected', [ApplicationController::class, 'userRe
 
 //payment route
 
-Route::post('/payments/process', [PaymentController::class, 'process'])->name('payments.process');
-Route::get('/payments/callback', [PaymentController::class, 'callback'])->name('payments.callback');
+Route::get('pay', [PaymentController::class, 'pay']);
+Route::post('/payment/process', [PaymentController::class, 'process'])->name('payments.process');
+Route::get('payment/callback', [PaymentController::class, 'callback'])->name('payment.callback');
+Route::post('/job-preview', [PaymentController::class, 'preview'])->name('job.preview');
 
 
+// Employer
+Route::middleware(['auth'])->group(function () {
+    Route::get('/my-transactions', [PaymentController::class, 'myTransactions'])->name('transactions.mine');
+});

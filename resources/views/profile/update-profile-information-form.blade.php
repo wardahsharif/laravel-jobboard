@@ -1,43 +1,39 @@
 <section>
-    <header>
-        <h2 class="text-lg font-medium text-gray-900">
-            {{ __('Profile Information') }}
-        </h2>
-
-        <p class="mt-1 text-sm text-gray-600">
-            {{ __("Update your account's profile information and email address.") }}
-        </p>
-    </header>
-
-    <form method="post" action="{{ route('profile.update') }}" class="mt-6 space-y-6">
+    <form method="post" action="{{ route('profile.update') }}">
         @csrf
-        @method('patch')
+        @method('PUT')
 
-        <div>
-            <x-input-label for="name" :value="__('Name')" />
-            <x-text-input id="name" name="name" type="text" class="mt-1 block w-full" 
-                :value="old('name', Auth::user()->name)" required autofocus autocomplete="name" />
-            <x-input-error class="mt-2" :messages="$errors->get('name')" />
+        <div class="mb-3">
+            <label for="username" class="form-label">Name</label>
+            <input type="text" 
+                   name="username" 
+                   id="username" 
+                   class="form-control @error('username') is-invalid @enderror" 
+                   value="{{ old('username', Auth::user()->username) }}" 
+                   required autofocus autocomplete="username">
+            @error('username')
+                <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
         </div>
 
-        <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" name="email" type="email" class="mt-1 block w-full" 
-                :value="old('email', Auth::user()->email)" required autocomplete="username" />
-            <x-input-error class="mt-2" :messages="$errors->get('email')" />
+        <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" 
+                   name="email" 
+                   id="email" 
+                   class="form-control @error('email') is-invalid @enderror" 
+                   value="{{ old('email', Auth::user()->email) }}" 
+                   required autocomplete="email">
+            @error('email')
+                <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
         </div>
 
-        <div class="flex items-center gap-4">
-            <x-primary-button>{{ __('Save') }}</x-primary-button>
+        <div class="d-flex justify-content-between align-items-center">
+            <button type="submit" class="btn btn-primary">Save</button>
 
             @if (session('status') === 'profile-updated')
-                <p
-                    x-data="{ show: true }"
-                    x-show="show"
-                    x-transition
-                    x-init="setTimeout(() => show = false, 2000)"
-                    class="text-sm text-gray-600"
-                >{{ __('Saved.') }}</p>
+                <small class="text-success ms-3">Saved.</small>
             @endif
         </div>
     </form>

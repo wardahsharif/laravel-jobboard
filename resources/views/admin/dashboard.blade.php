@@ -98,6 +98,19 @@
                 <a href="{{ route('admin.users.index') }}" class="btn btn-info">View Users</a>
             </div>
         </div>
+
+
+                <!-- Transactions -->
+                <div class="col-md-4">
+            <div class="card shadow-sm p-3 mb-4">
+                <h5 class="card-title">
+                    <i class="fa fa-credit-card"></i> Total Transactions
+                </h5>
+                <p class="card-text">{{ $totalTransactions }} Transactions</p>
+                <a href="{{ route('transactions.all') }}" class="btn btn-success">View Transactions</a>
+            </div>
+        </div>
+
     </div>
 </div>
 @endsection

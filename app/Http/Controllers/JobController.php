@@ -14,12 +14,37 @@ class JobController extends Controller
     public function index()
     {
         $user = auth()->user(); 
-    // Get the active and closed jobs for the employer
-    $activeJobs = Job::where('user_id', $user->id)->where('status', 'active')->count();
-    $closedJobs = Job::where('user_id', $user->id)->where('status', 'closed')->count();
 
-          // Get all jobs (for users)
-        $jobs = Job::latest()->paginate();
+
+
+        if ($user->role === 'employer') {
+            // Employer see only their own jobs
+            $jobs = Job::where('user_id', $user->id)->latest()->paginate();
+    
+            $activeJobs = Job::where('user_id', $user->id)
+                             ->where('status', 'active')
+                             ->count();
+    
+            $closedJobs = Job::where('user_id', $user->id)
+                             ->where('status', 'closed')
+                             ->count();
+        } elseif ($user->role === 'admin') {
+            // Admin: all jobs
+            $jobs = Job::latest()->paginate();
+
+        // Pass empty values or null for admin as these aren't needed
+        $activeJobs = null;
+        $closedJobs = null;
+
+        return view('jobs.index', compact('jobs', 'activeJobs', 'closedJobs'));
+            
+        } else {
+            // Regular user see only active jobs
+            $jobs = Job::where('status', 'active')->latest()->paginate();
+           
+                  return view('jobs.index', compact('jobs'));
+        }
+    
         return view('jobs.index', compact('jobs', 'activeJobs', 'closedJobs'));
 
         $featuredJobs = Job::where('status', 'active')->take(3)->get(); 

@@ -46,6 +46,26 @@ class ProfileController extends Controller
         return Redirect::route('profile.show')->with('status', 'profile-updated');
     }
 
+
+    public function processPayment(Request $request)
+{
+   
+    $payment = new Payment();
+    $payment->user_id = auth()->id();  
+    $payment->job_id = $request->job_id; 
+    $payment->amount = $request->amount; 
+    $payment->payment_method = $request->payment_method; 
+    $payment->status = 'completed'; 
+    $payment->save();
+
+  
+    $job = Job::find($request->job_id);
+    $job->status = 'paid';
+    $job->save();
+
+    return redirect()->route('payments.success');
+}
+
     /**
      * Delete the user's account.
      */
@@ -66,4 +86,6 @@ class ProfileController extends Controller
 
         return Redirect::to('/');
     }
+
+    
 }

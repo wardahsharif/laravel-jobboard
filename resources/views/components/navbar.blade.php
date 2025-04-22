@@ -28,6 +28,9 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('application.pending') }}">Applicants</a>
                     </li>
+                    <li class="nav-item">
+                      <a class="nav-link" href="{{ route('transactions.mine') }}">My Transactions</a>
+                       </li>
                 @endif
 
                 <!-- Regular User Links -->
@@ -51,6 +54,9 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('admin.applications.all') }}">Applications</a>
                     </li>
+                    <li class="nav-item">
+                          <a class="nav-link" href="{{ route('transactions.all') }}">Transactions</a>
+                       </li>
                 @endif
 
                 <!-- Profile Dropdown -->
