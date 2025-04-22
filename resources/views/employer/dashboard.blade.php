@@ -58,6 +58,17 @@
                     <a href="{{ route('application.rejected') }}" class="btn btn-danger">View Rejected Applications</a>
                 </div>
             </div>
+
+  <!-- Rejected Applications -->
+               <div class="col-md-4 mb-4">
+                <div class="card shadow-sm p-3 h-100">
+                    <h5 class="card-title">My Transactions</h5>
+                    <p class="card-text">{{ $transactions->count() }} Transaction</p>
+                    <a href="{{ route('transactions.mine') }}" class="btn btn-primary">View Transactions</a>
+                </div>
+            </div>
+
+            
         </div>
 </div>
     </div>

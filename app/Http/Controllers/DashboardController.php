@@ -63,8 +63,10 @@ class DashboardController extends Controller
             $query->where('user_id', $user->id);
         }) ->where('status', 'rejected')->get();
 
+    // Fetch the employer's transactions
+    $transactions = Transaction::where('user_id', $user->id)->latest()->paginate(5);
 
-        return view('employer.dashboard', compact('activeJobs', 'closedJobs', 'pendingApplications','approvedApplications','rejectedApplications','user'));
+        return view('employer.dashboard', compact('activeJobs', 'closedJobs', 'pendingApplications','approvedApplications','rejectedApplications','user','transactions'));
     }
 
 
